@@ -1,22 +1,30 @@
-pipeline {
+ pipeline {
+  tools {
+    maven 'Maven3.8.3'
+  }
     agent any
     stages {
         stage('Clean') {
             steps {
                 echo 'Cleaning..'
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn -B -DskipTests clean'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing..'
+                sh 'mvn test'
+            }
+             post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
             }
         }
-        stage('Integration tests') {
+        stage('Package') {
             steps {
-                echo 'Run integration test....'
+                echo 'mvn package'
             }
         }
-         
     }
 }
